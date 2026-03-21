@@ -1,8 +1,8 @@
-import { Router } from "express";
-import { getAllDeliveryAttempts } from "../controllers/deliveryController.js";
+// import { Router } from "express";
+// import { getAllDeliveryAttempts } from "../controllers/subscriberController.js";
 
-const router = Router();
+// const router = Router();
 
-router.get("/", getAllDeliveryAttempts);
+// router.get("/", getAllDeliveryAttempts);
 
-export default router;
+// export default router;

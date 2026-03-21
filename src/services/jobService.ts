@@ -1,29 +1,64 @@
-import { eq } from "drizzle-orm";
+import { and, asc, eq, isNull } from "drizzle-orm";
 import { db } from "../db/index.js";
-import { jobs, pipelines } from "../db/schema.js";
+import { jobs } from "../db/schema.js";
 
-export async function getNextPendingJob() {
-  const pendingJobs = await db.select().from(jobs).where(eq(jobs.status, "PENDING")).limit(1);
-
-  return pendingJobs[0] ?? null;
+interface CreateJobInput {
+  pipelineId: string;
+  payload: Record<string, unknown>;
 }
 
-export async function markJobAsProcessing(jobId: string) {
-  const [updatedJob] = await db
+export async function createJobService(data: CreateJobInput) {
+  const [job] = await db
+    .insert(jobs)
+    .values({
+      pipelineId: data.pipelineId,
+      payload: data.payload,
+      status: "PENDING",
+    })
+    .returning();
+
+  return job;
+}
+
+export async function getAllJobsService() {
+  return await db.select().from(jobs);
+}
+
+export async function getJobByIdService(id: string) {
+  const [job] = await db.select().from(jobs).where(eq(jobs.id, id));
+  return job;
+}
+
+export async function getNextPendingJobService() {
+  const [job] = await db
+    .select()
+    .from(jobs)
+    .where(and(eq(jobs.status, "PENDING"), isNull(jobs.startedAt)))
+    .orderBy(asc(jobs.receivedAt))
+    .limit(1);
+
+  return job;
+}
+
+export async function markJobAsProcessingService(id: string) {
+  const [job] = await db
     .update(jobs)
     .set({
       status: "PROCESSING",
       startedAt: new Date(),
       updatedAt: new Date(),
     })
-    .where(eq(jobs.id, jobId))
+    .where(eq(jobs.id, id))
     .returning();
 
-  return updatedJob;
+  return job;
 }
 
-export async function markJobAsCompleted(jobId: string, processedPayload: unknown) {
-  const [updatedJob] = await db
+export async function markJobAsCompletedService(
+  id: string,
+  processedPayload: Record<string, unknown>
+) {
+  const [job] = await db
     .update(jobs)
     .set({
       status: "COMPLETED",
@@ -31,14 +66,14 @@ export async function markJobAsCompleted(jobId: string, processedPayload: unknow
       completedAt: new Date(),
       updatedAt: new Date(),
     })
-    .where(eq(jobs.id, jobId))
+    .where(eq(jobs.id, id))
     .returning();
 
-  return updatedJob;
+  return job;
 }
 
-export async function markJobAsFailed(jobId: string, errorMessage: string) {
-  const [updatedJob] = await db
+export async function markJobAsFailedService(id: string, errorMessage: string) {
+  const [job] = await db
     .update(jobs)
     .set({
       status: "FAILED",
@@ -46,13 +81,8 @@ export async function markJobAsFailed(jobId: string, errorMessage: string) {
       completedAt: new Date(),
       updatedAt: new Date(),
     })
-    .where(eq(jobs.id, jobId))
+    .where(eq(jobs.id, id))
     .returning();
 
-  return updatedJob;
-}
-
-export async function getPipelineById(pipelineId: string) {
-  const result = await db.select().from(pipelines).where(eq(pipelines.id, pipelineId)).limit(1);
-  return result[0] ?? null;
+  return job;
 }

@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { handleWebhook } from "../controllers/webhookController.js";
+import { receiveWebhook } from "../controllers/webhookController.js";
 
 const router = Router();
 
-router.post("/:sourceSlug", handleWebhook);
+router.post("/:sourceSlug", receiveWebhook);
 
 export default router;

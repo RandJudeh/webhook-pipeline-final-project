@@ -1,14 +1,18 @@
 import { Router } from "express";
 import {
   createPipeline,
-  getAllPipelines,
-  addSubscriber,
+  deletePipeline,
+  getPipelineById,
+  getPipelines,
+  updatePipeline,
 } from "../controllers/pipelineController.js";
 
 const router = Router();
 
+router.get("/", getPipelines);
+router.get("/:id", getPipelineById);
 router.post("/", createPipeline);
-router.get("/", getAllPipelines);
-router.post("/:pipelineId/subscribers", addSubscriber);
+router.put("/:id", updatePipeline);
+router.delete("/:id", deletePipeline);
 
 export default router;

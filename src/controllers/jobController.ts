@@ -1,15 +1,27 @@
 import { Request, Response } from "express";
-import { db } from "../db/index.js";
-import { jobs } from "../db/schema.js";
+import {
+  getAllJobsService,
+  getJobByIdService,
+} from "../services/jobService.js";
 
-export async function getAllJobs(req: Request, res: Response) {
-  try {
-    const allJobs = await db.select().from(jobs);
-    return res.status(200).json(allJobs);
-  } catch (error) {
-    console.error("Failed to get jobs:", error);
-    return res.status(500).json({
-      error: "Failed to get jobs",
-    });
+export async function getJobs(
+  _req: Request,
+  res: Response
+): Promise<void> {
+  const jobs = await getAllJobsService();
+  res.status(200).json(jobs);
+}
+
+export async function getJobById(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const job = await getJobByIdService(req.params.id);
+
+  if (!job) {
+    res.status(404).json({ message: "Job not found" });
+    return;
   }
+
+  res.status(200).json(job);
 }
