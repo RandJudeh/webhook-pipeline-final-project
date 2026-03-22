@@ -45,4 +45,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: YOUR_DOCKERHUB_USERNAME/webhook-pipeline:latest
+          tags: randjudeh/webhook-pipeline-final-project:latest
