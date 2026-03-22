@@ -5,7 +5,7 @@ import {
   getAllPipelinesService,
   getPipelineByIdService,
   updatePipelineService,
-} from "../services/pipelineService.js";
+} from "../services/pipeline.service.js";
 
 export async function getPipelines(
   _req: Request,

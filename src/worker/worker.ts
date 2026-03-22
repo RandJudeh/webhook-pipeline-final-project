@@ -4,13 +4,13 @@ import {
   markJobAsCompletedService,
   markJobAsFailedService,
   markJobAsProcessingService,
-} from "../services/jobService.js";
-import { getPipelineByIdService } from "../services/pipelineService.js";
-import { processPayload } from "../services/processorService.js";
+} from "../services/job.service.js";
+import { getPipelineByIdService } from "../services/pipeline.service.js";
+import { processPayload } from "../services/processor.service.js";
 import {
   getSubscribersForPipeline,
   recordDeliveryAttempt,
-} from "../services/deliveryService.js";
+} from "../services/delivery.service.js";
 
 const MAX_DELIVERY_RETRIES = 3;
 

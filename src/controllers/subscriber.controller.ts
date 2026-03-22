@@ -3,7 +3,7 @@ import {
   createSubscriberService,
   getAllSubscribersService,
   getSubscribersByPipelineService,
-} from "../services/subscriberService.js";
+} from "../services/subscriber.service.js";
 
 function isValidUrl(url: string): boolean {
   try {

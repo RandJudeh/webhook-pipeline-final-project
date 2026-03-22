@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
-import { getJobByIdService } from "../services/jobService.js";
+import { getJobByIdService } from "../services/job.service.js";
 import {
   countDeliveryAttemptsForJob,
   getDeliveryAttemptsForJob,
-} from "../services/deliveryService.js";
+} from "../services/delivery.service.js";
 import {
   getAllJobsService,
-} from "../services/jobService.js";
+} from "../services/job.service.js";
 import {
   getJobsByPipelineIdService,
-} from "../services/jobService.js";
+} from "../services/job.service.js";
 
 export async function getJobs(
   _req: Request,

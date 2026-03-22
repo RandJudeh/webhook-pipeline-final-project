@@ -1,9 +1,9 @@
 import express from "express";
 import cors from "cors";
-import pipelineRoutes from "./routes/pipelineRoutes";
-import subscriberRoutes from "./routes/subscriberRoutes";
-import webhookRoutes from "./routes/webhookRoutes";
-import jobRoutes from "./routes/jobRoutes";
+import pipelineRoutes from "./routes/pipeline.routes";
+import subscriberRoutes from "./routes/subscriber.routes";
+import webhookRoutes from "./routes/webhook.routes";
+import jobRoutes from "./routes/job.routes";
 
 const app = express();
 

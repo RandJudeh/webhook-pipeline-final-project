@@ -5,7 +5,7 @@ import {
   getPipelineById,
   getPipelines,
   updatePipeline,
-} from "../controllers/pipelineController.js";
+} from "../controllers/pipeline.controller.js";
 
 const router = Router();
 

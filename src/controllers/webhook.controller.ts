@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { getPipelineBySourceSlugService } from "../services/pipelineService.js";
-import { createJobService } from "../services/jobService.js";
+import { getPipelineBySourceSlugService } from "../services/pipeline.service.js";
+import { createJobService } from "../services/job.service.js";
 
 export async function receiveWebhook(
   req: Request,
