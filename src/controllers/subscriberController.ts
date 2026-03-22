@@ -5,6 +5,15 @@ import {
   getSubscribersByPipelineService,
 } from "../services/subscriberService.js";
 
+function isValidUrl(url: string): boolean {
+  try {
+    const parsedUrl = new URL(url);
+    return parsedUrl.protocol === "http:" || parsedUrl.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 export async function getSubscribers(
   req: Request,
   res: Response
@@ -34,10 +43,24 @@ export async function createSubscriber(
     return;
   }
 
-  const subscriber = await createSubscriberService({
-    pipelineId,
-    targetUrl,
-  });
+  if (typeof targetUrl !== "string" || !isValidUrl(targetUrl)) {
+    res.status(400).json({
+      message: "Invalid targetUrl",
+    });
+    return;
+  }
 
-  res.status(201).json(subscriber);
+  try {
+    const subscriber = await createSubscriberService({
+      pipelineId,
+      targetUrl,
+    });
+
+    res.status(201).json(subscriber);
+  } catch (error) {
+    console.error("Error creating subscriber:", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
 }

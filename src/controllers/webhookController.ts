@@ -8,7 +8,7 @@ export async function receiveWebhook(
 ): Promise<void> {
   const { sourceSlug } = req.params;
 
-  const pipeline = await getPipelineBySourceSlugService(sourceSlug);
+  const pipeline = await getPipelineBySourceSlugService(sourceSlug as string);
 
   if (!pipeline) {
     res.status(404).json({ message: "Pipeline not found" });

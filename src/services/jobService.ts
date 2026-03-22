@@ -1,4 +1,4 @@
-import { and, asc, eq, isNull } from "drizzle-orm";
+import { and, asc, eq, isNull,desc } from "drizzle-orm";
 import { db } from "../db/index.js";
 import { jobs } from "../db/schema.js";
 
@@ -6,7 +6,22 @@ interface CreateJobInput {
   pipelineId: string;
   payload: Record<string, unknown>;
 }
+export async function getJobsByPipelineIdService(pipelineId: string) {
+  return await db
+    .select()
+    .from(jobs)
+    .where(eq(jobs.pipelineId, pipelineId))
+    .orderBy(desc(jobs.createdAt));
+}
+export async function getJobByIdService(jobId: string) {
+  const result = await db
+    .select()
+    .from(jobs)
+    .where(eq(jobs.id, jobId))
+    .limit(1);
 
+  return result[0] ?? null;
+}
 export async function createJobService(data: CreateJobInput) {
   const [job] = await db
     .insert(jobs)
@@ -24,10 +39,6 @@ export async function getAllJobsService() {
   return await db.select().from(jobs);
 }
 
-export async function getJobByIdService(id: string) {
-  const [job] = await db.select().from(jobs).where(eq(jobs.id, id));
-  return job;
-}
 
 export async function getNextPendingJobService() {
   const [job] = await db

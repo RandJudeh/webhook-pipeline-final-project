@@ -1,12 +1,13 @@
 {
   "name": "webhook-pipeline-final-project",
   "version": "1.0.0",
-  "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "worker": "tsx src/worker/worker.ts"
+    "worker": "tsx src/worker/worker.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

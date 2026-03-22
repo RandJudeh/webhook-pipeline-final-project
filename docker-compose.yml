@@ -1,7 +1,9 @@
+version: "3.8"
+
 services:
-  postgres:
-    image: postgres:16
-    container_name: webhook_pipeline_postgres
+  db:
+    image: postgres:15
+    container_name: webhook_db
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -11,6 +13,30 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: webhook_app
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      DATABASE_URL: postgres://postgres:postgres@db:5432/webhook_pipeline
+      WORKER_INTERVAL: 5000
+    command: npm run dev
+
+  worker:
+    build: .
+    container_name: webhook_worker
+    depends_on:
+      - db
+      - app
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/webhook_pipeline
+      WORKER_INTERVAL: 5000
+    command: npm run worker
 
 volumes:
   postgres_data:
