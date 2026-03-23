@@ -51,8 +51,14 @@ async function processOneJob(): Promise<void> {
 
     const subscribers = await getSubscribersForPipeline(pipeline.id);
 
+    if (subscribers.length === 0) {
+      throw new Error("No subscribers found for this pipeline");
+    }
+
+    let allSubscribersDelivered = true;
+
     for (const subscriber of subscribers) {
-      let delivered = false;
+      let deliveredToThisSubscriber = false;
 
       for (let attempt = 1; attempt <= MAX_DELIVERY_RETRIES; attempt++) {
         try {
@@ -81,12 +87,13 @@ async function processOneJob(): Promise<void> {
             await recordDeliveryAttempt({
               jobId: pendingJob.id,
               subscriberUrl: subscriber.targetUrl,
+              attemptNumber: attempt,
               status: "SUCCESS",
               responseStatusCode: response.status,
               errorMessage: null,
             });
 
-            delivered = true;
+            deliveredToThisSubscriber = true;
             break;
           }
 
@@ -97,6 +104,7 @@ async function processOneJob(): Promise<void> {
           await recordDeliveryAttempt({
             jobId: pendingJob.id,
             subscriberUrl: subscriber.targetUrl,
+            attemptNumber: attempt,
             status: "FAILED",
             responseStatusCode: response.status,
             errorMessage: `HTTP ${response.status}`,
@@ -110,6 +118,7 @@ async function processOneJob(): Promise<void> {
           await recordDeliveryAttempt({
             jobId: pendingJob.id,
             subscriberUrl: subscriber.targetUrl,
+            attemptNumber: attempt,
             status: "FAILED",
             responseStatusCode: null,
             errorMessage:
@@ -118,11 +127,17 @@ async function processOneJob(): Promise<void> {
         }
       }
 
-      if (!delivered) {
+      if (!deliveredToThisSubscriber) {
+        allSubscribersDelivered = false;
+
         console.log(
           `Subscriber ${subscriber.targetUrl} failed after ${MAX_DELIVERY_RETRIES} attempts.`
         );
       }
+    }
+
+    if (!allSubscribersDelivered) {
+      throw new Error("Delivery failed for one or more subscribers");
     }
 
     await markJobAsCompletedService(pendingJob.id, processedPayload);

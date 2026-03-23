@@ -5,6 +5,7 @@ import { eq, desc, sql } from "drizzle-orm";
 type RecordDeliveryAttemptInput = {
   jobId: string;
   subscriberUrl: string;
+  attemptNumber: number;
   status: string;
   responseStatusCode?: number | null;
   errorMessage?: string | null;
@@ -23,6 +24,7 @@ export async function recordDeliveryAttempt(input: RecordDeliveryAttemptInput) {
     .values({
       jobId: input.jobId,
       subscriberUrl: input.subscriberUrl,
+      attemptNumber: input.attemptNumber,
       status: input.status,
       responseStatusCode: input.responseStatusCode ?? null,
       errorMessage: input.errorMessage ?? null,

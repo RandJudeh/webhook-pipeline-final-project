@@ -47,6 +47,7 @@ export const deliveryAttempts = pgTable("delivery_attempts", {
     .notNull()
     .references(() => jobs.id, { onDelete: "cascade" }),
   subscriberUrl: text("subscriber_url").notNull(),
+  attemptNumber: integer("attempt_number").notNull(),
   status: text("status").notNull(),
   responseStatusCode: integer("response_status_code"),
   errorMessage: text("error_message"),

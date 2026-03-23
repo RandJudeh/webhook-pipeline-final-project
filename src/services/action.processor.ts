@@ -17,6 +17,18 @@ export function processPayload(
         message: payload.message.split("").reverse().join(""),
       };
 
+    case "word_count":
+      return {
+        wordCount: payload.message.trim().split(/\s+/).length,
+      };
+
+    case "validate_email":
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return {
+        email: payload.message,
+        isValid: emailRegex.test(payload.message),
+      };
+
     case "add_timestamp":
       return {
         message: payload.message,
