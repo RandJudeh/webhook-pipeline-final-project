@@ -52,3 +52,10 @@ export async function getDeliveryAttemptsForJob(jobId: string) {
     .where(eq(deliveryAttempts.jobId, jobId))
     .orderBy(desc(deliveryAttempts.attemptedAt));
 }
+
+export async function getAllDeliveryAttemptsService() {
+  return await db
+    .select()
+    .from(deliveryAttempts)
+    .orderBy(desc(deliveryAttempts.attemptedAt));
+}

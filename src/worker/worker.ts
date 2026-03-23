@@ -15,6 +15,7 @@ import {
 const MAX_DELIVERY_RETRIES = 3;
 
 let hasLoggedNoPendingJobs = false;
+let isProcessing = false;
 
 async function processOneJob(): Promise<void> {
   const pendingJob = await getNextPendingJobService();
@@ -58,7 +59,7 @@ async function processOneJob(): Promise<void> {
     let allSubscribersDelivered = true;
 
     for (const subscriber of subscribers) {
-      let deliveredToThisSubscriber = false;
+      let delivered = false;
 
       for (let attempt = 1; attempt <= MAX_DELIVERY_RETRIES; attempt++) {
         try {
@@ -93,7 +94,7 @@ async function processOneJob(): Promise<void> {
               errorMessage: null,
             });
 
-            deliveredToThisSubscriber = true;
+            delivered = true;
             break;
           }
 
@@ -127,7 +128,7 @@ async function processOneJob(): Promise<void> {
         }
       }
 
-      if (!deliveredToThisSubscriber) {
+      if (!delivered) {
         allSubscribersDelivered = false;
 
         console.log(
@@ -156,10 +157,18 @@ export function startWorker(): void {
   console.log(`Worker started. Polling every ${WORKER_INTERVAL} ms`);
 
   setInterval(async () => {
+    if (isProcessing) {
+      return;
+    }
+
+    isProcessing = true;
+
     try {
       await processOneJob();
     } catch (error) {
       console.error("Worker loop error:", error);
+    } finally {
+      isProcessing = false;
     }
   }, WORKER_INTERVAL);
 }

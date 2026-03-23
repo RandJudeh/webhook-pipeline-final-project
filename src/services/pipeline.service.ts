@@ -41,12 +41,13 @@ export async function getPipelineByIdService(id: string) {
 }
 
 export async function getPipelineBySourceSlugService(sourceSlug: string) {
-  const [pipeline] = await db
+  const result = await db
     .select()
     .from(pipelines)
-    .where(eq(pipelines.sourceSlug, sourceSlug));
+    .where(eq(pipelines.sourceSlug, sourceSlug))
+    .limit(1);
 
-  return pipeline;
+  return result[0] ?? null;
 }
 
 export async function updatePipelineService(
