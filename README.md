@@ -59,31 +59,108 @@ docker compose up -d --build
 ```bash
 docker compose exec app npx drizzle-kit migrate
 ```
-### API Endpoints
-create pipeline:
-```http
-POST /pipelines
-{
-  "name": "Orders Pipeline",
-  "sourceSlug": "orders",
-  "actionType": "uppercase"
-}
+### API Documentation
 
-```
-### Add Subscriber
-POST /subscribers
-{
-  "pipelineId": "<pipeline-id>",
-  "targetUrl": "https://webhook.site/your-url"
-}
+Base URL: http://localhost:3000
 
-### Send Webhook
-POST /webhooks/:sourceSlug
-``` bash
-curl -X POST http://localhost:3000/webhooks/orders \
--H "Content-Type: application/json" \
--d '{"message":"hello world"}'
+- Pipelines
+
+### 1. Create Pipeline POST /pipelines { “name”: “Orders Pipeline”,“sourceSlug”: “orders”, “actionType”: “uppercase” }
+
+Example: 
+```bash
+curl -X POST http://localhost:3000/pipelines
+-H “Content-Type: application/json”
+-d ‘{ “name”: “Orders Pipeline”, “sourceSlug”: “orders”, “actionType”:
+“uppercase” }’
 ```
+
+### 2.Get All Pipelines GET /pipelines
+
+Example: 
+```bash
+curl http://localhost:3000/pipelines
+```
+### 3.Get Pipeline By ID GET /pipelines/:id
+Example: 
+```bash
+curl http://localhost:3000/pipelines/
+```
+### 4.Update Pipeline PUT /pipelines/:id
+
+Example: 
+```bash 
+curl -X PUT http://localhost:3000/pipelines/
+-H “Content-Type: application/json”
+-d ‘{ “name”: “Updated Orders Pipeline”, “sourceSlug”: “orders”,
+“actionType”: “word_count” }’
+```
+### 5. Delete Pipeline DELETE /pipelines/:id
+
+Example: 
+```bash
+curl -X DELETE http://localhost:3000/pipelines/
+```
+- Subscribers
+
+### 1.Add Subscriber POST /subscribers { “pipelineId”: “”, “targetUrl”:“https://webhook.site/your-url” }
+
+Example:
+```bash
+ curl -X POST http://localhost:3000/subscribers
+-H “Content-Type: application/json”
+-d ‘{ “pipelineId”: “”, “targetUrl”: “https://webhook.site/your-url” }’
+```
+### 2.Get All Subscribers GET /subscribers
+
+Example: 
+```bash
+curl http://localhost:3000/subscribers
+```
+### 3. Get Subscribers By Pipeline GET /subscribers?pipelineId=
+
+Example: 
+```bash 
+curl “http://localhost:3000/subscribers?pipelineId=”
+```
+- Webhooks 
+### 1.Send Webhook POST /webhooks/:sourceSlug
+
+Example: 
+```bash
+curl -X POST http://localhost:3000/webhooks/orders
+-H “Content-Type: application/json”
+-d ‘{“message”:“hello world”}’
+```
+- Jobs
+### 1.Get All Jobs GET /jobs
+
+Example: 
+```bash
+curl http://localhost:3000/jobs
+```
+### 2.Get Job By ID GET /jobs/:id
+
+Example: 
+```bash
+curl http://localhost:3000/jobs/
+```
+- Delivery Attempts
+
+### 1.Get All Delivery Attempts GET /delivery-attempts
+
+Example: 
+```bash
+curl http://localhost:3000/delivery-attempts
+```
+
+### 2.Get Delivery Attempts By Job GET /delivery-attempts?jobId=
+
+Example:
+```bash
+ curl “http://localhost:3000/delivery-attempts?jobId=”
+```
+
 ### Job Processing Flow
 - Webhook received
 - Job created with status PENDING
