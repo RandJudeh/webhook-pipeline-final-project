@@ -63,7 +63,7 @@ docker compose exec app npx drizzle-kit migrate
 
 Base URL: http://localhost:3000
 
-- Pipelines
+### Pipelines
 
 ### 1. Create Pipeline POST /pipelines { “name”: “Orders Pipeline”,“sourceSlug”: “orders”, “actionType”: “uppercase” }
 
@@ -101,7 +101,7 @@ Example:
 ```bash
 curl -X DELETE http://localhost:3000/pipelines/
 ```
-- Subscribers
+### Subscribers
 
 ### 1.Add Subscriber POST /subscribers { “pipelineId”: “”, “targetUrl”:“https://webhook.site/your-url” }
 
@@ -123,7 +123,7 @@ Example:
 ```bash 
 curl “http://localhost:3000/subscribers?pipelineId=”
 ```
-- Webhooks 
+### Webhooks 
 ### 1.Send Webhook POST /webhooks/:sourceSlug
 
 Example: 
@@ -145,7 +145,7 @@ Example:
 ```bash
 curl http://localhost:3000/jobs/
 ```
-- Delivery Attempts
+### Delivery Attempts
 
 ### 1.Get All Delivery Attempts GET /delivery-attempts
 
